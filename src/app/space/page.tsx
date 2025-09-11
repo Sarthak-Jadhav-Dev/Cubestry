@@ -1,52 +1,142 @@
 "use client"
 
-import { useEffect,useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
-import { Switch } from "@/components/ui/switch"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu"
 import { PanelLeft, MoreHorizontal } from "lucide-react"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 import { Loader2 } from "lucide-react"
-import { Label } from "@radix-ui/react-label"
+import ReactMarkdown from "react-markdown"
+import remarkGfm from "remark-gfm"
+
 
 export default function AIDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [globalPrompt, setGlobalPrompt] = useState(()=>{
-    return localStorage.getItem("globalPrompt")||" "
+  const [globalPrompt, setGlobalPrompt] = useState(() => {
+    return localStorage.getItem("globalPrompt") || " "
   })
-  const [models, setModels] = useState<{ id: number; name: string; tempName: string }[]>(() => {
+  const [loading, setLoading] = useState(false)
+  const [res, setres] = useState<{
+    id: number,
+    text: string
+  }>({ id: 0, text: "" })
+  const [models, setModels] = useState<{
+    id: number;
+    name: string;
+    company: string,
+    tempName: string,
+    apiKey: string,
+    response: string,
+    prompt?: string
+  }[]>(() => {
     const saved = localStorage.getItem("llms")
-    return saved ? JSON.parse(saved) : [{ id: 1, name: "Gemini-2.5-flash", tempName: "" }]
+    return saved ? JSON.parse(saved) : [{ id: 1, name: "Gemini-2.5-flash", company: " ", tempName: "", apiKey: "" }]
   })
 
-  // Keep localStorage in sync with models
+  const [zeroModel, setzeroModel] = useState(false)
+
+  //The Part Repsonsible for saving data into LocalStorage
   useEffect(() => {
     localStorage.setItem("llms", JSON.stringify(models))
   }, [models])
 
-  useEffect(()=>{
-    localStorage.setItem("globalPrompt",globalPrompt)
-  },[globalPrompt])
+  useEffect(() => {
+    localStorage.setItem("globalPrompt", globalPrompt)
+  }, [globalPrompt])
 
+  //Saving the Entire Model
   const addModel = () => {
-    setModels([...models, { id: models.length + 1, name: "Untitled", tempName: "" }])
+    setModels([...models, { id: models.length + 1, name: "NewModel", tempName: "", company: " ", apiKey: "", prompt: "", response: " Your Response will appear here" }])
   }
 
+  //these are the function to update single entity in the array of objects of models
   const removeModel = (id: number) => {
     setModels(models.filter((m) => m.id !== id))
   }
-
-  const updateTempName = (id: number, value: string) => {
-    setModels(models.map((m) => (m.id === id ? { ...m, tempName: value } : m)))
-  }
-
   const saveModel = (id: number) => {
     setModels(models.map((m) => (m.id === id ? { ...m, name: m.tempName || m.name } : m)))
   }
-  const sendMessege = ()=>{
-
+  const updateTempName = (id: number, value: string) => {
+    setModels(models.map((m) => (m.id === id ? { ...m, tempName: value } : m)))
   }
+  const updateApiKey = (id: number, value: string) => {
+    setModels(models.map((m) => (m.id === id ? { ...m, apiKey: value } : m)))
+  }
+  const updateCompany = (id: number, value: string) => {
+    setModels(models.map((m) => (m.id === id ? { ...m, company: value } : m)))
+  }
+  const updatePrompt = (id: number, value: string) => {
+    setModels(models.map((m) => (m.id === id ? { ...m, prompt: value } : m)))
+  }
+
+  //alertFeature
+  const updateAlert = () => {
+    setzeroModel(false);
+  }
+
+  //toSet the Company 
+  const getApiUrl = (company: string) => {
+    switch (company) {
+      case "OpenAI":
+        return "/api/openai";
+      case "Gemini":
+        return "/api/gemini";
+      case "Anthropic":
+        return "/api/anthropic";
+      default:
+        return "/api/gemini"; // fallback if needed
+    }
+  };
+
+  const sendMessege = async () => {
+    setLoading(true);
+    if (models.length === 0) {
+      setzeroModel(true);
+      return;
+    }
+    const updatedModels = await Promise.all(
+      models.map(async (m) => {
+        try {
+          const apiUrl = getApiUrl(m.company);
+          const response = await fetch(apiUrl, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              model: m.name || "gemini-1.5-flash",
+              prompt: [
+                globalPrompt || "Hello, Gemini",
+                m.prompt ? `Here is my custom prompt: ${m.prompt}` : "",
+              ],
+              apiKey: m.apiKey,
+            }),
+          });
+
+          const data = await response.json();
+
+          return { ...m, response: data.text || "No response" };
+        } catch (error) {
+          return { ...m, response: "Thier was an Error in Fetching Response" };
+        }
+      })
+    );
+    setLoading(false);
+    setModels(updatedModels);
+  };
 
 
   return (
@@ -59,10 +149,25 @@ export default function AIDashboard() {
             + Add Model
           </Button>
           <Button className="w-full mb-2" onClick={sendMessege}>
-            Send Messege
+            {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : "Send"}
           </Button>
         </div>
       )}
+      {zeroModel ? (
+        <AlertDialog open={zeroModel} onOpenChange={setzeroModel}>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>No Models Found</AlertDialogTitle>
+              <AlertDialogDescription>
+                Please add at least one model before sending a message.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel onClick={() => setLoading(false)}>Okay</AlertDialogCancel>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      ) : null}
 
       {/* Main Content */}
       <div className="flex-1 flex flex-col">
@@ -75,7 +180,7 @@ export default function AIDashboard() {
           {/* Global Prompt */}
           <Input
             className="flex-1 max-w-lg"
-            placeholder="Global Prompt"
+            placeholder="Prompt Here"
             value={globalPrompt}
             onChange={(e) => setGlobalPrompt(e.target.value)}
           />
@@ -95,16 +200,32 @@ export default function AIDashboard() {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-64 p-3 space-y-3">
                     <h4 className="font-medium">Model Settings</h4>
+                    <Select
+                      onValueChange={(value) => updateCompany(model.id, value)}
+                      value={model.company}
+                    >
+                      <SelectTrigger className="w-[180px]">
+                        <SelectValue placeholder="Select the Provider" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectGroup>
+                          <SelectLabel>Provider</SelectLabel>
+                          <SelectItem value="OpenAI">OpenAI</SelectItem>
+                          <SelectItem value="Gemini">Gemini</SelectItem>
+                          <SelectItem value="Anthropic">Anthropic</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                     <Input
                       placeholder="Model Name"
                       value={model.tempName}
                       onChange={(e) => updateTempName(model.id, e.target.value)}
                     />
-                    <Input placeholder="API Key" type="password" />
-                    <Input placeholder="Custom Prompt (optional)" />
+                    <Input placeholder="API Key" value={model.apiKey} type="password" onChange={(e) => updateApiKey(model.id, e.target.value)} />
+                    <Input placeholder="Custom Prompt (optional)" value={model.prompt} onChange={(e) => { updatePrompt(model.id, e.target.value) }} />
                     <div className="flex gap-2">
                       <Button className="w-1/2" onClick={() => saveModel(model.id)}>
-                        Send
+                        Save
                       </Button>
                       <Button className="w-1/2" variant="destructive" onClick={() => removeModel(model.id)}>
                         Remove
@@ -126,7 +247,11 @@ export default function AIDashboard() {
                   <CardTitle>Output - {model.name}</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <p className="text-sm text-muted-foreground">Model response will appear here.</p>
+                  <CardContent>
+                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {model.response}
+                    </ReactMarkdown>
+                  </CardContent>
                 </CardContent>
               </Card>
             </div>

@@ -1,10 +1,10 @@
 import Anthropic from '@anthropic-ai/sdk';
 
 export async function POST(request: Request) {
-    const { model, prompt } = await request.json();
+    const { model, prompt ,apiKey } = await request.json();
     try {
         const anthropic = new Anthropic({
-            apiKey: process.env.ANTHROPIC_API_KEY, 
+            apiKey: apiKey || " ", 
         });
 
         const response = await anthropic.messages.create({
@@ -20,8 +20,8 @@ export async function POST(request: Request) {
             }
         )
     } catch (error) {
-        console.log("Error from Anthropics Side ",error);
-        return new Response("Error for the Anthropics Service ",{status:500});
+        console.log("The Error is Coming from the Anthropics API sending phase",error);
+        return new Response("The Error is Coming from the Anthropics API sending phase",{status:500});
     }
 }
 
