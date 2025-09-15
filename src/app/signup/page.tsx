@@ -4,6 +4,8 @@ import { useState } from "react"
 import { Loader2 } from "lucide-react"
 import { ToastContainer, toast } from 'react-toastify';
 import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 import {
   Card,
@@ -16,6 +18,7 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import { redirect } from "next/dist/server/api-utils";
 
 
 export default function CardDemo() {
@@ -52,6 +55,8 @@ export default function CardDemo() {
     }
   }
   return (
+    <>
+    <Navbar/>
     <div className="flex justify-center items-center h-screen">
       <Card className="w-full max-w-sm ">
         <CardHeader>
@@ -69,7 +74,7 @@ export default function CardDemo() {
           <form onSubmit={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="grid gap-2">
-                <Label htmlFor="username">UserName</Label>
+                <Label htmlFor="username">Username</Label>
                 <Input
                   id="username"
                   type="string"
@@ -91,12 +96,6 @@ export default function CardDemo() {
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
                 </div>
                 <Input id="password" type="password" required onChange={(e) => { setpassword(e.target.value) }} />
               </div>
@@ -112,5 +111,7 @@ export default function CardDemo() {
         </CardContent>
       </Card>
     </div>
+    <Footer/>
+    </>
   )
 }

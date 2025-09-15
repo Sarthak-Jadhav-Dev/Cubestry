@@ -15,6 +15,8 @@ import {
 } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
+import Navbar from "@/components/Navbar"
+import Footer from "@/components/Footer"
 
 export default function CardDemo() {
   const [password, setpassword] = useState("")
@@ -38,6 +40,8 @@ export default function CardDemo() {
 
   }
   return (
+    <>
+    <Navbar/>
     <div className="flex justify-center items-center h-screen">
       <Card className="w-full max-w-sm">
         <CardHeader>
@@ -67,12 +71,6 @@ export default function CardDemo() {
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Password</Label>
-                  <a
-                    href="#"
-                    className="ml-auto inline-block text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
                 </div>
                 <Input id="password" type="password" required onChange={(e) => setpassword(e.target.value)} />
               </div>
@@ -91,5 +89,7 @@ export default function CardDemo() {
         </CardContent>
       </Card>
     </div>
+    <Footer/>
+    </>
   )
 }

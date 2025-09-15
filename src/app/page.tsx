@@ -1,103 +1,161 @@
-import Image from "next/image";
+"use client"
+
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link"
+import Footer from "@/components/Footer"
+import Navbar from "@/components/Navbar"
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const features = [
+    {
+      title: "Dont Just Compare Models , Understand Them",
+      desc: "Cubestry allows you to test and compare different AI models side by side, helping you choose the best one for your needs."
+    },
+    {
+      title: "Compare and Win",
+      desc: "In the World of AI , Prompt Matters the most. Cubestry allows you to test and compare different prompts side by side, helping you choose the best one for your needs."
+    },
+    {
+      title: "Open Source",
+      desc: "This project is open source on GitHub, welcoming contributions and feedback from the community."
+    },
+    {
+      title: "Fully Secure",
+      desc: "We Dont use any of your data , all the data is stored in your browser's local storage."
+    },
+    {
+      title: "Growing Project",
+      desc: "We are constantly adding new features and models to Cubestry based on user feedback and the latest advancements in AI."
+    },
+    {
+      title: "100% Free and Secure",
+      desc: "Cubestry is completely free to use and does not store any of your data. All data is stored in your browser's local storage."
+    },
+    
+  ]
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <div className="min-h-screen flex flex-col">
+      {/* Navbar */}
+      <Navbar />
+      {/* Hero Section */}
+      <main className="flex flex-col items-center justify-center flex-1 px-6 text-center">
+        <h1 className="text-4xl md:text-6xl font-bold mt-16">
+          All in One AI Playground
+        </h1>
+        <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
+          Used by some of the world's largest companies, Next.js enables you to
+          create <span className="font-semibold">high-quality web applications</span>{" "}
+          with the power of React components.
+        </p>
+
+        <div className="flex gap-4 mt-10">
+          <Link href="/space"><Button size="lg">Get Started</Button></Link>
+          <Link href="/info"><Button size="lg" variant="outline">Learn about Cubestry</Button></Link>
         </div>
+
+        <p className="mt-6 text-sm text-muted-foreground">
+          ▲ Does Prompt Matters ? ▲
+        </p>
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+      {/* What's in Next.js Section */}
+      <section className="px-6 py-16 max-w-7xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold text-center">
+          What is Cubestry?{"\n"}
+          <span className="font-normal text-muted-foreground">
+            Everything you need to Test and Understand AI Models.
+          </span>
+        </h2>
+
+        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          {features.map((f, i) => (
+            <Card key={i} className="hover:shadow-lg transition">
+              <CardHeader>
+                <CardTitle>{f.title}</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-muted-foreground">{f.desc}</p>
+              </CardContent>
+            </Card>
+          ))}
+
+          {/* Special Highlight Card */}
+          <Card className="bg-black text-white hover:shadow-lg transition col-span-1 sm:col-span-2 lg:col-span-1">
+            <CardHeader>
+              <CardTitle>Cubestry</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p>Understand Who Works Best for you , all from your side</p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+      {/* Get Started Section */}
+      <section className="px-6 py-20 max-w-7xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-bold text-center">
+          Get started in seconds{" "}
+        </h2>
+
+        {/* Tags */}
+        <div className="flex flex-wrap justify-center gap-3 mt-8">
+          {["Free", "Secure", "All in One", "AI", "Mordern", "SaaS", "Open Source"].map((tag, i) => (
+            <span
+              key={i}
+              className="px-3 py-1 text-sm rounded-full bg-muted text-muted-foreground"
+            >
+              {tag}
+            </span>
+          ))}
+        </div>
+
+        {/* Content */}
+        <div className="mt-12 grid lg:grid-cols-2 gap-12 items-center">
+          {/* Text Side */}
+          <div className="space-y-6">
+            <p className="text-lg text-muted-foreground">
+              Cubestry is an open-source project that provides a collection of
+              ready-to-use Features for Understanding and using Perfect Suitable AI Model.
+            </p>
+            <p className="text-lg text-muted-foreground">
+              Not Just Models , Compare Prompts too.
+            </p>
+
+            <Link href="/space"><Button className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6 text-base">
+              Go to Space
+            </Button></Link>
+          </div>
+
+          {/* Image Cards */}
+          <div className="relative flex justify-center lg:justify-end">
+            <div className="grid grid-cols-3 gap-4 transform rotate-[-5deg]">
+              <div className="col-span-1">
+                <img
+                  src="/templates/template-1.png"
+                  alt="Template 1"
+                  className="rounded-xl shadow-lg"
+                />
+              </div>
+              <div className="col-span-1">
+                <img
+                  src="/templates/template-2.png"
+                  alt="Template 2"
+                  className="rounded-xl shadow-lg"
+                />
+              </div>
+              <div className="col-span-1">
+                <img
+                  src="/templates/template-3.png"
+                  alt="Template 3"
+                  className="rounded-xl shadow-lg"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <Footer />
     </div>
-  );
+  )
 }

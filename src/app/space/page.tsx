@@ -1,12 +1,25 @@
 "use client"
-
+import { BadgeInfo, Key, Home, Bot, User, Settings, CircleStar, Send, ClipboardCopy } from 'lucide-react';
 import { useEffect, useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
+import Link from "next/link"
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent } from "@/components/ui/dropdown-menu"
 import { PanelLeft, MoreHorizontal } from "lucide-react"
+import { ToastContainer, toast, Bounce } from 'react-toastify';
+
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandSeparator,
+  CommandShortcut,
+} from "@/components/ui/command"
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,11 +36,13 @@ import ReactMarkdown from "react-markdown"
 import remarkGfm from "remark-gfm"
 
 
+
 export default function AIDashboard() {
   const [sidebarOpen, setSidebarOpen] = useState(true)
   const [globalPrompt, setGlobalPrompt] = useState(() => {
     return localStorage.getItem("globalPrompt") || " "
   })
+
   const [loading, setLoading] = useState(false)
   const [res, setres] = useState<{
     id: number,
@@ -40,13 +55,22 @@ export default function AIDashboard() {
     tempName: string,
     apiKey: string,
     response: string,
-    prompt?: string
+    prompt?: string,
+    isLoading?: boolean
   }[]>(() => {
     const saved = localStorage.getItem("llms")
     return saved ? JSON.parse(saved) : [{ id: 1, name: "Gemini-2.5-flash", company: " ", tempName: "", apiKey: "" }]
   })
 
   const [zeroModel, setzeroModel] = useState(false)
+
+  const textCopied = () => toast("Text Copied to Clipboard!");
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      toast("Text Copied to Clipboard!");
+    });
+  };
 
   //The Part Repsonsible for saving data into LocalStorage
   useEffect(() => {
@@ -59,7 +83,7 @@ export default function AIDashboard() {
 
   //Saving the Entire Model
   const addModel = () => {
-    setModels([...models, { id: models.length + 1, name: "NewModel", tempName: "", company: " ", apiKey: "", prompt: "", response: " Your Response will appear here" }])
+    setModels([...models, { id: models.length + 1, name: "Model", tempName: "", company: " ", apiKey: "", prompt: "", response: " Your Response will appear here", isLoading: false }])
   }
 
   //these are the function to update single entity in the array of objects of models
@@ -82,11 +106,6 @@ export default function AIDashboard() {
     setModels(models.map((m) => (m.id === id ? { ...m, prompt: value } : m)))
   }
 
-  //alertFeature
-  const updateAlert = () => {
-    setzeroModel(false);
-  }
-
   //toSet the Company 
   const getApiUrl = (company: string) => {
     switch (company) {
@@ -107,6 +126,7 @@ export default function AIDashboard() {
       setzeroModel(true);
       return;
     }
+    setModels(models.map((m) => ({ ...m, isLoading: true })));
     const updatedModels = await Promise.all(
       models.map(async (m) => {
         try {
@@ -141,16 +161,69 @@ export default function AIDashboard() {
 
   return (
     <div className="flex h-screen">
+      <ToastContainer
+        position="bottom-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick={false}
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="dark"
+        transition={Bounce}
+      />
       {/* Sidebar */}
       {sidebarOpen && (
-        <div className="w-60 bg-gray-100 dark:bg-gray-900 border-r p-4">
-          <h2 className="text-lg font-semibold mb-4">Menu</h2>
+        <div className="w-60 bg-gray-100 dark:bg-gray-900 border-r p-4 overflow-hidden">
+          <h2 className="text-lg font-semibold mb-4">Cubestry</h2>
           <Button variant="outline" className="w-full mb-2" onClick={addModel}>
             + Add Model
           </Button>
-          <Button className="w-full mb-2" onClick={sendMessege}>
-            {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> : "Send"}
+          <Button className="w-full mb-2 flex" onClick={sendMessege}>
+            {loading ? <Loader2 className="animate-spin mr-2 h-4 w-4" /> :
+              <>
+                <Send />
+                <span className="ml-2">Send</span>
+              </>
+            }
           </Button>
+          <Command className="rounded-lg border shadow-md md:min-w-[] h-90 mt-2">
+            <CommandInput placeholder="Type to search..." />
+            <CommandList>
+              <CommandEmpty>No results found.</CommandEmpty>
+              <CommandGroup heading="Suggestions">
+                <CommandItem>
+                  <BadgeInfo />
+                  <span>Learn More</span>
+                </CommandItem>
+                <CommandItem>
+                  <Key />
+                  <span>Manage API Keys</span>
+                </CommandItem>
+                <Link href="/" className="w-full">
+                <CommandItem>
+                  <Home />
+                  <span>Back to Home</span>
+                </CommandItem>
+                </Link>
+              </CommandGroup>
+              <CommandSeparator />
+              <CommandGroup heading="Settings">
+                <CommandItem>
+                  <User />
+                  <span>Profile</span>
+                  <CommandShortcut>⌘</CommandShortcut>
+                </CommandItem>
+                <CommandItem>
+                  <Settings />
+                  <span>Settings</span>
+                  <CommandShortcut>⌘</CommandShortcut>
+                </CommandItem>
+              </CommandGroup>
+            </CommandList>
+          </Command>
         </div>
       )}
       {zeroModel ? (
@@ -164,6 +237,9 @@ export default function AIDashboard() {
             </AlertDialogHeader>
             <AlertDialogFooter>
               <AlertDialogCancel onClick={() => setLoading(false)}>Okay</AlertDialogCancel>
+              <Link href="/learncubestry">
+                <Link href="/info"><AlertDialogAction>Learn More</AlertDialogAction></Link>
+              </Link>
             </AlertDialogFooter>
           </AlertDialogContent>
         </AlertDialog>
@@ -217,14 +293,14 @@ export default function AIDashboard() {
                       </SelectContent>
                     </Select>
                     <Input
-                      placeholder="Model Name"
+                      placeholder="Please add Correct Model Name"
                       value={model.tempName}
                       onChange={(e) => updateTempName(model.id, e.target.value)}
                     />
                     <Input placeholder="API Key" value={model.apiKey} type="password" onChange={(e) => updateApiKey(model.id, e.target.value)} />
                     <Input placeholder="Custom Prompt (optional)" value={model.prompt} onChange={(e) => { updatePrompt(model.id, e.target.value) }} />
                     <div className="flex gap-2">
-                      <Button className="w-1/2" onClick={() => saveModel(model.id)}>
+                      <Button className="w-1/2"  onClick={() => saveModel(model.id)}>
                         Save
                       </Button>
                       <Button className="w-1/2" variant="destructive" onClick={() => removeModel(model.id)}>
@@ -239,24 +315,38 @@ export default function AIDashboard() {
         </div>
 
         {/* Output Area */}
-        <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-x">
-          {models.map((model) => (
-            <div key={model.id} className="p-4 overflow-auto">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Output - {model.name}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <CardContent>
-                    <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                      {model.response}
-                    </ReactMarkdown>
+        {models.length === 0 ? (
+          <div className="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg">
+            🚀 No models yet — click “+ Add Model” to get started!
+          </div>
+        ) : (
+          <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-x overflow-hidden">
+            {models.map((model) => (
+              <div key={model.id} className="p-4 overflow-auto">
+                <Card className="h-full flex flex-col">
+                  <CardHeader className='flex justify-between items-center'>
+                    <CardTitle className="flex items-center-safe gap-2">
+                      <CircleStar /> {model.name}
+                    </CardTitle>
+                    <span onClick={() => handleCopy(model.response)}><ClipboardCopy className='w-4.5 h-4.5' /></span>
+                  </CardHeader>
+                  <CardContent className="flex-1 overflow-auto relative">
+                    {model.isLoading ? (
+                      <div className="relative w-full h-full rounded-lg overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-[shimmer_2s_infinite]"></div>
+                        <div className="h-full w-full bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+                      </div>
+                    ) : (
+                      <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                        {model.response}
+                      </ReactMarkdown>
+                    )}
                   </CardContent>
-                </CardContent>
-              </Card>
-            </div>
-          ))}
-        </div>
+                </Card>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
