@@ -5,8 +5,22 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import Link from "next/link"
 import Footer from "@/components/Footer"
 import Navbar from "@/components/Navbar"
+import Image from "next/image"
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+
 
 export default function Home() {
+  const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleClick = () => {
+    if (session) {
+      router.push("/space");
+    } else {
+      router.push("/login?callbackUrl=/space");
+    }
+  };
   const features = [
     {
       title: "Dont Just Compare Models , Understand Them",
@@ -51,7 +65,7 @@ export default function Home() {
         </p>
 
         <div className="flex gap-4 mt-10">
-          <Link href="/space"><Button size="lg">Get Started</Button></Link>
+          <Button size="lg" onClick={handleClick}>Get Started</Button>
           <Link href="/info"><Button size="lg" variant="outline">Learn about Cubestry</Button></Link>
         </div>
 
@@ -122,33 +136,20 @@ export default function Home() {
               Not Just Models , Compare Prompts too.
             </p>
 
-            <Link href="/space"><Button className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6 text-base">
+            <Button className="bg-black text-white hover:bg-black/90 rounded-xl px-6 py-6 text-base" onClick={handleClick}>
               Go to Space
-            </Button></Link>
+            </Button>
           </div>
 
           {/* Image Cards */}
           <div className="relative flex justify-center lg:justify-end">
-            <div className="grid grid-cols-3 gap-4 transform rotate-[-5deg]">
+            <div className="grid grid-cols-3">
               <div className="col-span-1">
-                <img
-                  src="/templates/template-1.png"
-                  alt="Template 1"
-                  className="rounded-xl shadow-lg"
-                />
-              </div>
-              <div className="col-span-1">
-                <img
-                  src="/templates/template-2.png"
-                  alt="Template 2"
-                  className="rounded-xl shadow-lg"
-                />
-              </div>
-              <div className="col-span-1">
-                <img
-                  src="/templates/template-3.png"
-                  alt="Template 3"
-                  className="rounded-xl shadow-lg"
+                <Image
+                src={"/image1.png"}
+                width={700}
+                height={700}
+                alt="Image 1"
                 />
               </div>
             </div>

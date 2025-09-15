@@ -1,5 +1,8 @@
+"use client"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { useSession } from "next-auth/react"
+import { useRouter } from "next/navigation"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import Link from "next/link"
@@ -78,6 +81,15 @@ const roadmapCards = [
 ]
 
 export default function InfoPage() {
+  const { data: session } = useSession();
+  const router = useRouter();
+  const handleClick = () => {
+    if (session) {
+      router.push("/space");
+    } else {
+      router.push("/login?callbackUrl=/space");
+    }
+  };
   return (
     <>
       <Navbar />
@@ -105,14 +117,14 @@ export default function InfoPage() {
           </div>
           <div className="mt-12 flex justify-center gap-4">
             <Link href="/info"><Button className="text-base px-8 py-4 shadow-lg">Learn About  Cubestry</Button></Link>
-            <Link href="/space"><Button variant="secondary" className="text-base px-8 py-4">Get Started</Button></Link>
+            <Button variant="secondary" className="text-base px-8 py-4" onClick={handleClick}>Get Started</Button>
           </div>
         </section>
 
         {/* Templates Showcase */}
         <section className="w-full py-16 bg-gray-50">
           <h2 className="text-4xl font-bold text-center mb-8">
-            Use like the best
+            Use AI like the best
           </h2>
           <div className="flex flex-wrap gap-6 justify-center">
             {templates.map((tpl, i) => (
@@ -127,7 +139,7 @@ export default function InfoPage() {
             ))}
           </div>
           <div className="text-center mt-10">
-            <Button className="px-8 py-3 text-lg">Start Using Cubestry</Button>
+            <Button className="px-8 py-3 text-lg" onClick={handleClick}>Start Using Cubestry</Button>
           </div>
         </section>
 
