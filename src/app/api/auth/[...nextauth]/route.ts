@@ -38,7 +38,7 @@ export const authOptions: AuthOptions = {
           }
 
           console.log("✅ Login Successful");
-          return { id: String((user as any)._id), email: user.email };
+          return {id: String((user as unknown as { _id: string })._id), email: user.email };
         } catch (error) {
           console.error("❌ Authorize Error:", error);
           return null;
