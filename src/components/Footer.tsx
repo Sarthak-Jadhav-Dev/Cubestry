@@ -37,7 +37,7 @@ export default function Footer() {
 
         {/* About */}
         <div>
-          <h4 className="font-semibold mb-4">About Vercel</h4>
+          <h4 className="font-semibold mb-4">About Cubestry</h4>
           <ul className="space-y-2 text-sm text-muted-foreground">
             <li><Link href="/github">Open Source Software</Link></li>
             <li><Link href="/github">GitHub</Link></li>

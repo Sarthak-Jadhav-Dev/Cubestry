@@ -64,8 +64,6 @@ export default function AIDashboard() {
 
   const [zeroModel, setzeroModel] = useState(false)
 
-  const textCopied = () => toast("Text Copied to Clipboard!");
-
   const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
       toast("Text Copied to Clipboard!");
@@ -89,9 +87,11 @@ export default function AIDashboard() {
   //these are the function to update single entity in the array of objects of models
   const removeModel = (id: number) => {
     setModels(models.filter((m) => m.id !== id))
+    toast("Model Removed Successfully!");
   }
   const saveModel = (id: number) => {
     setModels(models.map((m) => (m.id === id ? { ...m, name: m.tempName || m.name } : m)))
+    toast("Model Saved Successfully!, Click on three dots to close Window");
   }
   const updateTempName = (id: number, value: string) => {
     setModels(models.map((m) => (m.id === id ? { ...m, tempName: value } : m)))
@@ -147,9 +147,10 @@ export default function AIDashboard() {
           });
 
           const data = await response.json();
-
+          toast("Messege Sent Successfully !")
           return { ...m, response: data.text || "No response" };
         } catch (error) {
+          toast.error("Error in Sending the Messege , Service might be Inavailable from API Key Provider")
           return { ...m, response: "Thier was an Error in Fetching Response" };
         }
       })

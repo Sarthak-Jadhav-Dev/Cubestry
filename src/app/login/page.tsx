@@ -3,6 +3,7 @@
 import { Button } from "@/components/ui/button";
 import { signIn } from "next-auth/react";
 import { Loader2 } from "lucide-react";
+import { ToastContainer, toast } from 'react-toastify';
 import { useState } from "react";
 import Link from "next/link";
 import {
@@ -46,10 +47,32 @@ export default function LoginPage() {
 
     if (!result?.error) {
       // ✅ Login successful → redirect
-      router.push(callbackUrl);
+      setTimeout(()=>{
+        router.push(callbackUrl);
+      },2000);
+
+      toast.success("Logged in successfully! Redirecting...", {
+        position: "top-right",
+        autoClose: 2000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     } else {
       // ❌ Failed
-      alert("Invalid credentials");
+      toast.error("Invalid Credentials", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "light",
+      });
     }
   };
 
@@ -57,6 +80,7 @@ export default function LoginPage() {
     <>
       <Navbar />
       <div className="flex justify-center items-center h-screen">
+        <ToastContainer />
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle>Login to your account</CardTitle>

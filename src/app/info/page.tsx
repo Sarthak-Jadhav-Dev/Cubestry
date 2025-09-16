@@ -11,7 +11,7 @@ const heroCards = [
   {
     title: "Superior  Experience",
     desc: "Cubestry gives the best performance for Testing and Comaparing AI Models.",
-    icon: ">", // Replace with an icon or SVG as needed
+    icon: ">", 
   },
   {
     title: "Battle-teste the AI Models",
@@ -26,44 +26,16 @@ const heroCards = [
 ]
 
 const templates = [
-  {
-    tag: "User Friendly",
-    title: "Cubestry is User Friendly",
-    desc: "An intuitive, easy-to-navigate interface for all users.",
-  },
-  {
-    tag: "Open Source",
-    title: "Transparent & Open Source",
-    desc: "Fully open source on GitHub for community contributions.",
-  },
-  {
-    tag: "Performance",
-    title: "High Performance",
-    desc: "Optimized for speed and reliability under load.",
-  },
+  { tag: "User Friendly", title: "Cubestry is User Friendly", desc: "An intuitive, easy-to-navigate interface for all users." },
+  { tag: "Open Source", title: "Transparent & Open Source", desc: "Fully open source on GitHub for community contributions." },
+  { tag: "Performance", title: "High Performance", desc: "Optimized for speed and reliability under load." },
 ]
 
 const whyCards = [
-  {
-    title: "100% Open Source",
-    desc: "Cubestry is Open Source , so you can Trust us.",
-    icon: "🧩",
-  },
-  {
-    title: "Friendly Design",
-    desc: "Responsive, mobile-friendly UI out of the box.",
-    icon: "📱",
-  },
-  {
-    title: "Modern Technologies",
-    desc: "Built on Next.js, TailwindCSS, and Shadcn UI.",
-    icon: "🚀",
-  },
-  {
-    title: "Inclusive & Versatile",
-    desc: "Equally useful for non-technical users and developers.",
-    icon: "🌏",
-  },
+  { title: "100% Open Source", desc: "Cubestry is Open Source , so you can Trust us.", icon: "🧩" },
+  { title: "Friendly Design", desc: "Responsive, mobile-friendly UI out of the box.", icon: "📱" },
+  { title: "Modern Technologies", desc: "Built on Next.js, TailwindCSS, and Shadcn UI.", icon: "🚀" },
+  { title: "Inclusive & Versatile", desc: "Equally useful for non-technical users and developers.", icon: "🌏" },
 ]
 
 const techCards = [
@@ -83,6 +55,7 @@ const roadmapCards = [
 export default function InfoPage() {
   const { data: session } = useSession();
   const router = useRouter();
+
   const handleClick = () => {
     if (session) {
       router.push("/space");
@@ -90,48 +63,51 @@ export default function InfoPage() {
       router.push("/login?callbackUrl=/space");
     }
   };
+
   return (
-    <>
+    <div className="w-full flex flex-col">
       <Navbar />
-      <main className="w-full flex flex-col items-center bg-gray-50">
+      <main className="w-full flex flex-col bg-gray-50">
+
         {/* Hero Section */}
-        <section className="w-full py-20 bg-white text-center">
-          <h1 className="text-5xl font-extrabold leading-tight mb-6">
-            A powerful framework for building <br/>
-            <span className="text-primary">high-performance</span> server rendered web applications
-          </h1>
-          <p className="max-w-2xl mx-auto text-lg text-gray-600 mb-12">
-            Cubestry delivers peerless performance, developer efficiency, and modern UI building blocks. Trusted for production by smart teams.
-          </p>
-          <div className="flex flex-col md:flex-row gap-8 justify-center mt-6">
-            {heroCards.map((card, idx) => (
-              <div
-                key={idx}
-                className="rounded-xl bg-gray-100 shadow-md p-7 flex-1 max-w-sm"
-              >
-                <div className="text-3xl mb-3">{card.icon}</div>
-                <h3 className="font-bold text-xl mb-2">{card.title}</h3>
-                <p className="text-muted-foreground">{card.desc}</p>
-              </div>
-            ))}
-          </div>
-          <div className="mt-12 flex justify-center gap-4">
-            <Link href="/info"><Button className="text-base px-8 py-4 shadow-lg">Learn About  Cubestry</Button></Link>
-            <Button variant="secondary" className="text-base px-8 py-4" onClick={handleClick}>Get Started</Button>
+        <section className="w-full bg-white py-20">
+          <div className="max-w-5xl mx-auto px-6 text-center">
+            <h1 className="text-5xl font-extrabold leading-tight mb-6">
+              A powerful tool for testing <br/>
+              <span className="text-primary">AI Models</span> for free and through secure method
+            </h1>
+            <p className="max-w-2xl mx-auto text-lg text-gray-600 mb-12">
+              Cubestry delivers peerless performance, developer efficiency, and modern UI building blocks. Trusted for production by smart teams.
+            </p>
+            <div className="flex flex-col md:flex-row gap-8 justify-center mt-6">
+              {heroCards.map((card, idx) => (
+                <div
+                  key={idx}
+                  className="rounded-xl bg-gray-100 shadow-md p-7 flex-1 max-w-sm"
+                >
+                  <div className="text-3xl mb-3">{card.icon}</div>
+                  <h3 className="font-bold text-xl mb-2">{card.title}</h3>
+                  <p className="text-muted-foreground">{card.desc}</p>
+                </div>
+              ))}
+            </div>
+            <div className="mt-12 flex justify-center gap-4">
+              <Link href="/info">
+                <Button className="text-base px-8 py-4 shadow-lg">Learn About Cubestry</Button>
+              </Link>
+              <Button variant="secondary" className="text-base px-8 py-4" onClick={handleClick}>
+                Get Started
+              </Button>
+            </div>
           </div>
         </section>
 
         {/* Templates Showcase */}
-        <section className="w-full py-16 bg-gray-50">
-          <h2 className="text-4xl font-bold text-center mb-8">
-            Use AI like the best
-          </h2>
+        <section className="max-w-5xl mx-auto px-6 py-12">
+          <h2 className="text-4xl font-bold text-center mb-8">Use AI like the best</h2>
           <div className="flex flex-wrap gap-6 justify-center">
-            {templates.map((tpl, i) => (
-              <div
-                key={tpl.title}
-                className="bg-white border rounded-xl shadow-lg p-6 w-72"
-              >
+            {templates.map((tpl) => (
+              <div key={tpl.title} className="bg-white border rounded-xl shadow-lg p-6 w-72">
                 <div className="inline-block bg-primary/10 text-primary px-3 py-1 rounded mb-2 text-sm font-medium">{tpl.tag}</div>
                 <h3 className="font-semibold text-lg mb-1">{tpl.title}</h3>
                 <p className="text-muted-foreground text-sm">{tpl.desc}</p>
@@ -143,15 +119,12 @@ export default function InfoPage() {
           </div>
         </section>
 
-        {/* Why Cubestry Cards */}
+        {/* Why Cubestry */}
         <section className="max-w-5xl mx-auto px-6 py-12">
           <h2 className="text-2xl font-semibold mb-8 text-center">Why Cubestry?</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {whyCards.map((item, idx) => (
-              <Card
-                key={idx}
-                className="transition-transform transform hover:-translate-y-2 hover:shadow-xl hover:border-primary group"
-              >
+              <Card key={idx} className="transition-transform transform hover:-translate-y-2 hover:shadow-xl hover:border-primary group">
                 <CardHeader>
                   <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{item.icon}</div>
                   <CardTitle className="text-lg">{item.title}</CardTitle>
@@ -165,7 +138,7 @@ export default function InfoPage() {
         </section>
 
         {/* Feature Grid */}
-        <section className="max-w-6xl mx-auto px-6 py-12">
+        <section className="max-w-5xl mx-auto px-6 py-12">
           <h2 className="text-2xl font-semibold mb-6 text-center">Features</h2>
           <div className="grid md:grid-cols-3 gap-6">
             {[
@@ -188,15 +161,12 @@ export default function InfoPage() {
           </div>
         </section>
 
-        {/* Tech Stack & Architecture Cards */}
+        {/* Tech Stack */}
         <section className="max-w-5xl mx-auto px-6 py-12">
           <h2 className="text-2xl font-semibold mb-8 text-center">Tech Stack & Architecture</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {techCards.map((item, idx) => (
-              <Card
-                key={idx}
-                className="transition-transform transform hover:-translate-y-2 hover:shadow-xl hover:border-primary group"
-              >
+              <Card key={idx} className="transition-transform transform hover:-translate-y-2 hover:shadow-xl hover:border-primary group">
                 <CardHeader>
                   <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{item.icon}</div>
                   <CardTitle className="text-base">{item.title}</CardTitle>
@@ -262,15 +232,12 @@ export default function InfoPage() {
           </Button>
         </section>
 
-        {/* Roadmap Cards */}
+        {/* Roadmap */}
         <section className="max-w-5xl mx-auto px-6 py-12">
           <h2 className="text-2xl font-semibold mb-8 text-center">Roadmap</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
             {roadmapCards.map((item, idx) => (
-              <Card
-                key={idx}
-                className="transition-transform transform hover:-translate-y-2 hover:shadow-xl hover:border-primary group"
-              >
+              <Card key={idx} className="transition-transform transform hover:-translate-y-2 hover:shadow-xl hover:border-primary group">
                 <CardHeader>
                   <div className="text-3xl mb-2 group-hover:scale-110 transition-transform">{item.icon}</div>
                   <CardTitle className="text-base">{item.title}</CardTitle>
@@ -282,9 +249,8 @@ export default function InfoPage() {
             ))}
           </div>
         </section>
-
       </main>
       <Footer />
-    </>
+    </div >
   )
 }
