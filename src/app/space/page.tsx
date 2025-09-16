@@ -37,25 +37,34 @@ import remarkGfm from "remark-gfm"
 
 
 export default function AIDashboard() {
-  const [sidebarOpen, setSidebarOpen] = useState(true)
-  const [globalPrompt, setGlobalPrompt] = useState(() => {
-    return localStorage.getItem("globalPrompt") || " "
-  })
-
   const [loading, setLoading] = useState(false)
+
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const [globalPrompt, setGlobalPrompt] = useState(" ");
+
   const [models, setModels] = useState<{
     id: number;
     name: string;
-    company: string,
-    tempName: string,
-    apiKey: string,
-    response: string,
-    prompt?: string,
-    isLoading?: boolean
-  }[]>(() => {
-    const saved = localStorage.getItem("llms")
-    return saved ? JSON.parse(saved) : [{ id: 1, name: "Gemini-2.5-flash", company: " ", tempName: "", apiKey: "" }]
-  })
+    company: string;
+    tempName: string;
+    apiKey: string;
+    response: string;
+    prompt?: string;
+    isLoading?: boolean;
+  }[]>([
+    { id: 1, name: "Gemini-2.5-flash", company: " ", tempName: "", apiKey: "", response: "" }
+  ]);
+
+  // Load from localStorage only in the browser
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const savedPrompt = localStorage.getItem("globalPrompt");
+      if (savedPrompt) setGlobalPrompt(savedPrompt);
+
+      const savedModels = localStorage.getItem("llms");
+      if (savedModels) setModels(JSON.parse(savedModels));
+    }
+  }, []);
 
   const [zeroModel, setzeroModel] = useState(false)
 
@@ -66,12 +75,16 @@ export default function AIDashboard() {
   };
 
   useEffect(() => {
-    localStorage.setItem("llms", JSON.stringify(models))
-  }, [models])
+    if (typeof window !== "undefined") {
+      localStorage.setItem("llms", JSON.stringify(models));
+    }
+  }, [models]);
 
   useEffect(() => {
-    localStorage.setItem("globalPrompt", globalPrompt)
-  }, [globalPrompt])
+    if (typeof window !== "undefined") {
+      localStorage.setItem("globalPrompt", globalPrompt);
+    }
+  }, [globalPrompt]);
 
   const addModel = () => {
     setModels([...models, { id: models.length + 1, name: "Model", tempName: "", company: " ", apiKey: "", prompt: "", response: " Your Response will appear here", isLoading: false }])
@@ -144,7 +157,7 @@ export default function AIDashboard() {
           return { ...m, response: data.text || "No response" };
         } catch (error) {
           toast.error("Error in Sending the Messege , Service might be Inavailable from API Key Provider")
-          return { ...m, response: "Thier was an Error in Fetching Response" ,error};
+          return { ...m, response: "Thier was an Error in Fetching Response", error };
         }
       })
     );
@@ -197,10 +210,10 @@ export default function AIDashboard() {
                   <span>Manage API Keys</span>
                 </CommandItem>
                 <Link href="/" className="w-full">
-                <CommandItem>
-                  <Home />
-                  <span>Back to Home</span>
-                </CommandItem>
+                  <CommandItem>
+                    <Home />
+                    <span>Back to Home</span>
+                  </CommandItem>
                 </Link>
               </CommandGroup>
               <CommandSeparator />
@@ -294,7 +307,7 @@ export default function AIDashboard() {
                     <Input placeholder="API Key" value={model.apiKey} type="password" onChange={(e) => updateApiKey(model.id, e.target.value)} />
                     <Input placeholder="Custom Prompt (optional)" value={model.prompt} onChange={(e) => { updatePrompt(model.id, e.target.value) }} />
                     <div className="flex gap-2">
-                      <Button className="w-1/2"  onClick={() => saveModel(model.id)}>
+                      <Button className="w-1/2" onClick={() => saveModel(model.id)}>
                         Save
                       </Button>
                       <Button className="w-1/2" variant="destructive" onClick={() => removeModel(model.id)}>
