@@ -1,5 +1,5 @@
 "use client"
-import { BadgeInfo, Key, Home, Bot, User, Settings, CircleStar, Send, ClipboardCopy } from 'lucide-react';
+import { BadgeInfo, Key, Home, User, Settings, CircleStar, Send, ClipboardCopy } from 'lucide-react';
 import { useEffect, useState } from "react"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -29,7 +29,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import { Loader2 } from "lucide-react"
 import ReactMarkdown from "react-markdown"
@@ -44,10 +43,6 @@ export default function AIDashboard() {
   })
 
   const [loading, setLoading] = useState(false)
-  const [res, setres] = useState<{
-    id: number,
-    text: string
-  }>({ id: 0, text: "" })
   const [models, setModels] = useState<{
     id: number;
     name: string;
@@ -70,7 +65,6 @@ export default function AIDashboard() {
     });
   };
 
-  //The Part Repsonsible for saving data into LocalStorage
   useEffect(() => {
     localStorage.setItem("llms", JSON.stringify(models))
   }, [models])
@@ -79,7 +73,6 @@ export default function AIDashboard() {
     localStorage.setItem("globalPrompt", globalPrompt)
   }, [globalPrompt])
 
-  //Saving the Entire Model
   const addModel = () => {
     setModels([...models, { id: models.length + 1, name: "Model", tempName: "", company: " ", apiKey: "", prompt: "", response: " Your Response will appear here", isLoading: false }])
   }
@@ -151,7 +144,7 @@ export default function AIDashboard() {
           return { ...m, response: data.text || "No response" };
         } catch (error) {
           toast.error("Error in Sending the Messege , Service might be Inavailable from API Key Provider")
-          return { ...m, response: "Thier was an Error in Fetching Response" };
+          return { ...m, response: "Thier was an Error in Fetching Response" ,error};
         }
       })
     );
@@ -318,7 +311,7 @@ export default function AIDashboard() {
         {/* Output Area */}
         {models.length === 0 ? (
           <div className="flex-1 flex items-center justify-center text-gray-500 dark:text-gray-400 text-lg">
-            🚀 No models yet — click “+ Add Model” to get started!
+            🚀 No models yet — click + Add Model to get started!
           </div>
         ) : (
           <div className="flex-1 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 divide-x overflow-hidden">

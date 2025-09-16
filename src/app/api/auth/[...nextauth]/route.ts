@@ -1,66 +1,75 @@
-import NextAuth from "next-auth";
-import bcrypt from "bcrypt"
+import NextAuth, { AuthOptions } from "next-auth";
+import bcrypt from "bcrypt";
 import UserModel from "@/app/model/User";
-import { AuthOptions } from "next-auth";
 import dbConnect from "@/app/lib/dbConnect";
 import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
+// import GoogleProvider from "next-auth/providers/google"; // Uncomment if you want Google login
 
 export const authOptions: AuthOptions = {
   providers: [
     CredentialsProvider({
       name: "Credentials",
       credentials: {
-        email: { label: "email", type: "text", placeholder: "jsmith@example.com" },
-        password: { label: "password", type: "text" }
+        email: { label: "Email", type: "text", placeholder: "jsmith@example.com" },
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: any): Promise<any> {
+      async authorize(
+        credentials: { email: string; password: string } | undefined
+      ) {
+        if (!credentials) return null;
+
         try {
           await dbConnect();
           const user = await UserModel.findOne({ email: credentials.email });
 
           if (!user) {
-            console.log("User not found");
+            console.log("❌ User not found");
             return null;
           }
-          const isPasswordValid = await bcrypt.compare(credentials.password, user.password);
+
+          const isPasswordValid = await bcrypt.compare(
+            credentials.password,
+            user.password
+          );
 
           if (!isPasswordValid) {
-            console.log("Invalid password");
+            console.log("❌ Invalid password");
             return null;
           }
 
           console.log("✅ Login Successful");
-          return { email: user.email };
-
+          return { id: String((user as any)._id), email: user.email };
         } catch (error) {
           console.error("❌ Authorize Error:", error);
           return null;
         }
-      }
+      },
     }),
     // GoogleProvider({
     //   clientId: process.env.GOOGLE_CLIENT_ID!,
     //   clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    // })
+    // }),
   ],
   session: { strategy: "jwt" },
   callbacks: {
-    async jwt({ token, user , account ,profile}) {
+    async jwt({ token, user }) {
       if (user) {
-        token.id = user.id || profile?.sub;
+        token.id = (user as { id?: string }).id ?? token.id;
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string; // <-- attach id here
+        (session.user as { id?: string }).id = token.id as string;
       }
       return session;
     },
   },
-  pages: { signIn: "/login" },
+  pages: {
+    signIn: "/login",
+  },
 };
 
 const handler = NextAuth(authOptions);
+
 export { handler as GET, handler as POST };

@@ -1,8 +1,6 @@
 "use client"
 
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Github, Twitter} from "lucide-react"
+import { Github,} from "lucide-react"
 import Link from "next/link"
 
 export default function Footer() {

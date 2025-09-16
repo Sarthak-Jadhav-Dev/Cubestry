@@ -12,20 +12,6 @@ export interface User extends Document{
     password:string,
     Questions: query[];
 }
-const querySchema:Schema<query> = new Schema({
-    aiKey:{
-        type:String,
-        required:true
-    },
-    customPrompt:{
-        type:String,
-        required:true
-    },
-    inbuildPrompt:{
-        type:String,
-        default:""
-    }
-})
 
 const UserSchema:Schema<User> = new Schema({
     username:{

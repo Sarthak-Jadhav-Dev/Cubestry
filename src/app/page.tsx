@@ -36,7 +36,7 @@ export default function Home() {
     },
     {
       title: "Fully Secure",
-      desc: "We Dont use any of your data , all the data is stored in your browser's local storage."
+      desc: "We Dont use any of your data , all the data is stored in your browsers local storage."
     },
     {
       title: "Growing Project",
@@ -44,7 +44,7 @@ export default function Home() {
     },
     {
       title: "100% Free and Secure",
-      desc: "Cubestry is completely free to use and does not store any of your data. All data is stored in your browser's local storage."
+      desc: "Cubestry is completely free to use and does not store any of your data. All data is stored in your browsers local storage."
     },
     
   ]
@@ -59,7 +59,7 @@ export default function Home() {
           All in One AI Playground
         </h1>
         <p className="mt-6 max-w-2xl text-lg text-muted-foreground">
-          Used by some of the world's largest companies, Next.js enables you to
+          Used by some of the worlds largest companies, Next.js enables you to
           create <span className="font-semibold">high-quality web applications</span>{" "}
           with the power of React components.
         </p>
@@ -74,7 +74,7 @@ export default function Home() {
         </p>
       </main>
 
-      {/* What's in Next.js Section */}
+      {/* Whats in Next.js Section */}
       <section className="px-6 py-16 max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-bold text-center">
           What is Cubestry?{"\n"}
